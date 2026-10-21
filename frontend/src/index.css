@@ -1,0 +1,32 @@
+@import 'tailwindcss';
+
+/* デザイン仕様（Design/DesignSpec）のトークン */
+@theme {
+  --font-sans: 'Noto Sans JP', sans-serif;
+
+  /* ブランド / ボタン-primary */
+  --color-primary: #4cb3f8;
+  --color-primary-hover: #3c8ec4;
+  --color-primary-active: #347cab;
+  /* 選択中メニューの文字色 */
+  --color-primary-strong: #32a8f8;
+
+  /* テキスト */
+  --color-text: #333333;
+  --color-text-light: #4d4d4d;
+
+  /* ボタン-normal */
+  --color-normal: #b3b3b3;
+  --color-normal-hover: #999999;
+  --color-normal-active: #808080;
+
+  /* 背景 */
+  --color-bg-light: #f5f8fa;
+  --color-bg-dark: #c8e6fa;
+}
+
+@layer base {
+  body {
+    @apply bg-white font-sans text-text;
+  }
+}
