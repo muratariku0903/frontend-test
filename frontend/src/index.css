@@ -31,6 +31,33 @@
   --color-bg-dark: #c8e6fa;
 }
 
+/*
+ * デザイン仕様のスクロールバー（幅 8px・角丸 4px・#B3B3B3、枠から 4px 内側）。
+ * 幅 16px の領域に 4px の透明な枠を付けて、見た目の幅を 8px にしている。
+ */
+@utility scrollbar-design {
+  /* スクロールしないときも場所を確保し、本文の幅を変えない */
+  scrollbar-gutter: stable;
+
+  &::-webkit-scrollbar {
+    width: 16px;
+  }
+  &::-webkit-scrollbar-track {
+    margin-block: 4px;
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border: 4px solid transparent;
+    border-radius: 8px;
+    background: var(--color-normal) padding-box;
+  }
+  /* ::-webkit-scrollbar に対応していないブラウザ（Firefox）向け */
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-normal) transparent;
+  }
+}
+
 @layer base {
   body {
     @apply bg-white font-sans text-text;

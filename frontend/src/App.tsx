@@ -20,7 +20,7 @@ export const App = () => {
         selectedId={selectedId}
         onSelect={setChosenId}
       />
-      <MainArea />
+      <MainArea selectedId={selectedId} />
       <Footer />
     </div>
   );
