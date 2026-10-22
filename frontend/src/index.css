@@ -20,6 +20,12 @@
   --color-normal-hover: #999999;
   --color-normal-active: #808080;
 
+  /* ボタン-secondary の hover（pressed は normal と同じ色） */
+  --color-secondary-hover: #cccccc;
+
+  /* エラー（デザイン仕様に定義がないため追加） */
+  --color-error: #e53935;
+
   /* 背景 */
   --color-bg-light: #f5f8fa;
   --color-bg-dark: #c8e6fa;
@@ -28,5 +34,10 @@
 @layer base {
   body {
     @apply bg-white font-sans text-text;
+  }
+
+  /* Tailwind v4 はボタンのカーソルを既定（矢印）にするため、押せるボタンは指のカーソルにする */
+  button:not(:disabled) {
+    cursor: pointer;
   }
 }
