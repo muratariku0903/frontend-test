@@ -1,4 +1,8 @@
+import { Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { useContent } from '../../api/queries';
+import { Message } from '../../components/ui/Message';
+import { EditableField } from './EditableField';
 
 type Props = {
   selectedId: number | null;
@@ -10,32 +14,28 @@ export const MainArea = ({ selectedId }: Props) => (
       {selectedId === null ? (
         <Message>コンテンツがありません</Message>
       ) : (
-        <ContentView id={selectedId} />
+        <ErrorBoundary
+          key={selectedId}
+          fallback={<Message>取得に失敗しました</Message>}
+        >
+          <Suspense fallback={<Message>読み込み中…</Message>}>
+            <ContentView id={selectedId} />
+          </Suspense>
+        </ErrorBoundary>
       )}
     </div>
   </main>
 );
 
 const ContentView = ({ id }: { id: number }) => {
-  const { data: content, isPending, isError } = useContent(id);
+  const { data: content } = useContent(id);
 
-  // 読み込み中・エラーの表示は あとで で実装する
-  if (isPending) return null;
-  if (isError) return null;
   if (content === null) return <Message>コンテンツが見つかりません</Message>;
 
   return (
     <div className="grid h-full grid-cols-[1fr_90px] grid-rows-[40px_1fr] gap-5">
-      <h1 className="col-start-1 truncate px-[30px] text-2xl leading-10 font-bold">
-        {content.title}
-      </h1>
-      <div className="scrollbar-design col-start-1 min-h-0 overflow-y-auto rounded-lg bg-white py-[26px] pr-[14px] pl-[30px] leading-6 whitespace-pre-wrap">
-        {content.body}
-      </div>
+      <EditableField contentId={id} name="title" value={content.title} />
+      <EditableField contentId={id} name="body" value={content.body} />
     </div>
   );
 };
-
-const Message = ({ children }: { children: string }) => (
-  <p className="text-text-light">{children}</p>
-);

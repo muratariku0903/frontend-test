@@ -36,7 +36,7 @@ export const Button = ({
 }: Props) => (
   <button
     type={type}
-    className={`flex h-10 shrink-0 flex-col items-center justify-center rounded text-[10px] leading-none font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-30 ${variants[variant]} ${sizes[size]}`}
+    className={`flex h-10 shrink-0 flex-col items-center justify-center rounded text-[10px] leading-none font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-30 ${variants[variant]} ${sizes[size]}`}
     {...props}
   >
     <Icon src={icon} />

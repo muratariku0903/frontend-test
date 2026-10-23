@@ -1,4 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import { contentApi } from './contentApi';
 import type { Content, CreateContentInput, UpdateContentInput } from './types';
 
@@ -10,15 +14,19 @@ export const contentKeys = {
 
 /** コンテンツ一覧 */
 export const useContents = () =>
-  useQuery({ queryKey: contentKeys.list(), queryFn: contentApi.fetchAll });
+  useSuspenseQuery({
+    queryKey: contentKeys.list(),
+    queryFn: contentApi.fetchAll,
+  });
 
 /** コンテンツ詳細 */
 export const useContent = (id: number) =>
-  useQuery({
+  useSuspenseQuery({
     queryKey: contentKeys.detail(id),
     queryFn: () => contentApi.fetchById(id),
   });
 
+/** コンテンツ作成 */
 export const useCreateContent = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -30,6 +38,7 @@ export const useCreateContent = () => {
   });
 };
 
+/** コンテンツ更新 */
 export const useUpdateContent = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -42,6 +51,7 @@ export const useUpdateContent = () => {
   });
 };
 
+/** コンテンツ削除 */
 export const useDeleteContent = () => {
   const queryClient = useQueryClient();
   return useMutation({
