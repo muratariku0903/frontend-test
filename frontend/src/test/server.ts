@@ -1,6 +1,10 @@
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
-import type { Content, UpdateContentInput } from '../api/types';
+import type {
+  Content,
+  CreateContentInput,
+  UpdateContentInput,
+} from '../api/types';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -42,6 +46,14 @@ export const server = setupServer(
   http.get(`${BASE_URL}/content/:id`, ({ params }) => {
     const content = findContent(params.id);
     return content ? HttpResponse.json(content) : new HttpResponse(null);
+  }),
+
+  http.post(`${BASE_URL}/content`, async ({ request }) => {
+    const input = (await request.json()) as CreateContentInput;
+    const id = Math.max(0, ...contents.map((content) => content.id)) + 1;
+    const content = createContent(id, input.title, input.body);
+    contents = [...contents, content];
+    return HttpResponse.json(content, { status: 201 });
   }),
 
   http.put(`${BASE_URL}/content/:id`, async ({ params, request }) => {

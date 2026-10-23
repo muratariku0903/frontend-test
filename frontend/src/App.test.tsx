@@ -89,3 +89,54 @@ describe('本文の編集', () => {
     ).not.toBeInTheDocument();
   });
 });
+
+describe('コンテンツの作成', () => {
+  it('入力が条件を満たさない間は、保存できない', async () => {
+    const { user } = renderApp();
+    await user.click(await screen.findByRole('button', { name: 'Edit' }));
+    await user.click(screen.getByRole('button', { name: 'New page' }));
+
+    const dialog = screen.getByRole('dialog', { name: 'New page' });
+    await user.type(
+      within(dialog).getByRole('textbox', { name: 'タイトル' }),
+      'あ',
+    );
+    await user.type(
+      within(dialog).getByRole('textbox', { name: '本文' }),
+      'あ'.repeat(9),
+    );
+
+    expect(
+      within(dialog).getByText('本文は10文字以上で入力してください'),
+    ).toBeInTheDocument();
+    expect(within(dialog).getByRole('button', { name: 'Save' })).toBeDisabled();
+  });
+
+  it('保存すると一覧に追加され、そのコンテンツが選択される', async () => {
+    const { user } = renderApp();
+    await user.click(await screen.findByRole('button', { name: 'Edit' }));
+    await user.click(screen.getByRole('button', { name: 'New page' }));
+
+    const dialog = screen.getByRole('dialog', { name: 'New page' });
+    await user.type(
+      within(dialog).getByRole('textbox', { name: 'タイトル' }),
+      '羅生門',
+    );
+    await user.type(
+      within(dialog).getByRole('textbox', { name: '本文' }),
+      'ある日の暮方の事である。',
+    );
+    await user.click(within(dialog).getByRole('button', { name: 'Save' }));
+
+    const sidebar = screen.getByRole('navigation');
+    expect(
+      await within(sidebar).findByRole('button', { name: '羅生門' }),
+    ).toHaveAttribute('aria-current', 'true');
+    expect(
+      await within(screen.getByRole('main')).findByRole('heading', {
+        name: '羅生門',
+      }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+});
