@@ -39,7 +39,8 @@ export const resetContents = () => {
 const findContent = (id: string | readonly string[] | undefined) =>
   contents.find((content) => content.id === Number(id));
 
-// 実際のバックエンドの挙動に合わせる（存在しない ID の GET / PUT は 200 で中身が空）
+// 実際のバックエンドの挙動に合わせる
+// （存在しない ID の GET / PUT は 200 で中身が空、削除済みの DELETE は 500）
 export const server = setupServer(
   http.get(`${BASE_URL}/content`, () => HttpResponse.json(contents)),
 
@@ -63,5 +64,11 @@ export const server = setupServer(
     );
     const content = findContent(params.id);
     return content ? HttpResponse.json(content) : new HttpResponse(null);
+  }),
+  http.delete(`${BASE_URL}/content/:id`, ({ params }) => {
+    const content = findContent(params.id);
+    if (!content) return new HttpResponse(null, { status: 500 });
+    contents = contents.filter(({ id }) => id !== content.id);
+    return new HttpResponse(null, { status: 204 });
   }),
 );

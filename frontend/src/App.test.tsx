@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { renderApp } from './test/render';
 
@@ -138,5 +138,28 @@ describe('コンテンツの作成', () => {
       }),
     ).toBeInTheDocument();
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+});
+
+describe('コンテンツの削除', () => {
+  it('ゴミ箱を押すと一覧から消え、選択中だった場合は先頭のコンテンツが選択される', async () => {
+    const { user } = renderApp();
+    await user.click(await screen.findByRole('button', { name: 'Edit' }));
+    await user.click(screen.getByRole('button', { name: '坊ちゃんを削除' }));
+
+    const sidebar = screen.getByRole('navigation');
+    await waitFor(() =>
+      expect(
+        within(sidebar).queryByRole('button', { name: '坊ちゃん' }),
+      ).not.toBeInTheDocument(),
+    );
+    expect(
+      within(sidebar).getByRole('button', { name: '方丈記' }),
+    ).toHaveAttribute('aria-current', 'true');
+    expect(
+      await within(screen.getByRole('main')).findByRole('heading', {
+        name: '方丈記',
+      }),
+    ).toBeInTheDocument();
   });
 });
