@@ -28,8 +28,34 @@ API の Document は、
 $ cp ./data/bk-dev.sqlite ./data/dev.sqlite
 ```
 
+## 動作確認の手順
+
+### 必要な環境
+
+- Node.js 22 以上
+- npm 10 以上
+
+### 1. バックエンドを起動する（リポジトリ直下）
+
+```bash
+npm install
+npm run migration:run
+npm run build
+npm run start
+```
+
+### 2. フロントエンドを起動する（`frontend/`）
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
 ## 追加仕様
+
 ### 新規作成：ダイアログで入力してから作成する
+
 - 要件は「サイドバーの『+』ボタンでページを追加できる」ことのみで、作成時の入力方法や初期値は決められておらず、デザインにも作成用の画面はない。
 - そこで、「New page」を押すとダイアログを開き、タイトルと本文を入力して、両方が制約（タイトル 1〜50 文字、本文 10〜2000 文字）を満たしたときだけ作成する方式とした。
 
@@ -77,6 +103,7 @@ $ cp ./data/bk-dev.sqlite ./data/dev.sqlite
 - コンポーネントが API の型に依存するのは、`handleSubmit` の中で `mutate` を呼ぶ箇所（API との境界）だけに限定している。
 
 ### 読み込み中・取得失敗の表示：Suspense + Error Boundary
+
 - エラー処理やローディングはコンポーネントの中で分岐させない。
 - **表示の責務に集中させたい**：境界として外側に宣言すると、コンポーネントは「データが取れている前提」で書ける。
 - `useSuspenseQuery` の `data` は `undefined` を含まない型になるため、型の上でも分岐が不要になる。
