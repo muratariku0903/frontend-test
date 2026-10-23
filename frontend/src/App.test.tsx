@@ -68,3 +68,24 @@ describe('タイトルの編集', () => {
     ).not.toBeInTheDocument();
   });
 });
+
+describe('本文の編集', () => {
+  it('保存すると、メインエリアに反映される', async () => {
+    const { user } = renderApp();
+    const main = await screen.findByRole('main');
+    await within(main).findByRole('heading', { name: '坊ちゃん' });
+
+    await user.click(screen.getByRole('button', { name: '本文を編集' }));
+    const textarea = screen.getByRole('textbox', { name: '本文' });
+    await user.clear(textarea);
+    await user.type(textarea, '新築の二階から首を出していたら、');
+    await user.click(screen.getByRole('button', { name: '本文を保存' }));
+
+    expect(
+      await within(main).findByText('新築の二階から首を出していたら、'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('textbox', { name: '本文' }),
+    ).not.toBeInTheDocument();
+  });
+});
