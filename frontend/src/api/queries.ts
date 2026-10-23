@@ -6,7 +6,7 @@ import {
 import { contentApi } from './contentApi';
 import type { Content, CreateContentInput, UpdateContentInput } from './types';
 
-export const contentKeys = {
+const contentKeys = {
   all: ['contents'] as const,
   list: () => [...contentKeys.all, 'list'] as const,
   detail: (id: number) => [...contentKeys.all, 'detail', id] as const,

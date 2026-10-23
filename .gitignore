@@ -32,3 +32,7 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+# Claude Code のローカル設定
+/.claude
+
+/PLAN.md

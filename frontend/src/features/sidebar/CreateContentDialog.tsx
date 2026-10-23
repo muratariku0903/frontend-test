@@ -34,7 +34,6 @@ export const CreateContentDialog = ({ onCreated, onClose }: Props) => {
 
   return (
     <Dialog
-      open
       title="New page"
       onClose={onClose}
       actions={

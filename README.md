@@ -52,6 +52,16 @@ npm install
 npm run dev
 ```
 
+表示された URL（通常は http://localhost:5173）を開きます。API の接続先は `frontend/.env` の `VITE_API_BASE_URL`（初期値 `http://localhost:3000`）で設定しています
+
+### 3. テスト・lint・ビルド（`frontend/`）
+
+```bash
+npm test         # テスト（バックエンドの起動は不要。MSW でバックエンドを模倣）
+npm run lint     # oxlint
+npm run build    # 型チェック + ビルド
+```
+
 ## 追加仕様
 
 ### 新規作成：ダイアログで入力してから作成する
