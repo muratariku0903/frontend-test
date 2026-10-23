@@ -74,6 +74,7 @@ export const EditableField = ({ contentId, name, value }: Props) => {
               size="compact"
               icon={cancelIcon}
               label="Cancel"
+              aria-label={`${label}の編集をキャンセル`}
               onClick={() => setIsEditing(false)}
             />
             <Button
@@ -81,6 +82,7 @@ export const EditableField = ({ contentId, name, value }: Props) => {
               size="compact"
               icon={saveIcon}
               label="Save"
+              aria-label={`${label}を保存`}
               onClick={save}
               disabled={!isValid || updateContent.isPending}
             />
@@ -90,6 +92,7 @@ export const EditableField = ({ contentId, name, value }: Props) => {
             variant="primary"
             icon={editIcon}
             label="Edit"
+            aria-label={`${label}を編集`}
             onClick={startEditing}
           />
         )}

@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
-import type { Content } from '../api/types';
+import type { Content, UpdateContentInput } from '../api/types';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -12,7 +12,7 @@ const createContent = (id: number, title: string, body: string): Content => ({
   updatedAt: '2026-01-01T00:00:00.000Z',
 });
 
-const contents = [
+const initialContents = () => [
   createContent(
     1,
     '坊ちゃん',
@@ -25,12 +25,31 @@ const contents = [
   ),
 ];
 
-// 実際のバックエンドの挙動に合わせる（存在しない ID の GET は 200 で中身が空）
+let contents = initialContents();
+
+/** テストごとにデータを初期状態に戻す（更新したデータを次のテストに持ち越さない） */
+export const resetContents = () => {
+  contents = initialContents();
+};
+
+const findContent = (id: string | readonly string[] | undefined) =>
+  contents.find((content) => content.id === Number(id));
+
+// 実際のバックエンドの挙動に合わせる（存在しない ID の GET / PUT は 200 で中身が空）
 export const server = setupServer(
   http.get(`${BASE_URL}/content`, () => HttpResponse.json(contents)),
 
   http.get(`${BASE_URL}/content/:id`, ({ params }) => {
-    const content = contents.find(({ id }) => id === Number(params.id));
+    const content = findContent(params.id);
+    return content ? HttpResponse.json(content) : new HttpResponse(null);
+  }),
+
+  http.put(`${BASE_URL}/content/:id`, async ({ params, request }) => {
+    const input = (await request.json()) as UpdateContentInput;
+    contents = contents.map((content) =>
+      content.id === Number(params.id) ? { ...content, ...input } : content,
+    );
+    const content = findContent(params.id);
     return content ? HttpResponse.json(content) : new HttpResponse(null);
   }),
 );

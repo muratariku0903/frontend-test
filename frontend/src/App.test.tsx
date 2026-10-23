@@ -23,3 +23,48 @@ describe('一覧の表示', () => {
     ).toBeInTheDocument();
   });
 });
+
+describe('タイトルの編集', () => {
+  it('保存すると、メインエリアとサイドバーの両方に反映される', async () => {
+    const { user } = renderApp();
+    const main = await screen.findByRole('main');
+    await within(main).findByRole('heading', { name: '坊ちゃん' });
+
+    await user.click(screen.getByRole('button', { name: 'タイトルを編集' }));
+    const input = screen.getByRole('textbox', { name: 'タイトル' });
+    await user.clear(input);
+    await user.type(input, '坊っちゃん');
+    await user.click(screen.getByRole('button', { name: 'タイトルを保存' }));
+
+    expect(
+      await within(main).findByRole('heading', { name: '坊っちゃん' }),
+    ).toBeInTheDocument();
+    expect(
+      await within(screen.getByRole('navigation')).findByRole('button', {
+        name: '坊っちゃん',
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it('Cancel すると、入力を捨てて元のタイトルに戻る', async () => {
+    const { user } = renderApp();
+    const main = await screen.findByRole('main');
+    await within(main).findByRole('heading', { name: '坊ちゃん' });
+
+    await user.click(screen.getByRole('button', { name: 'タイトルを編集' }));
+    await user.type(
+      screen.getByRole('textbox', { name: 'タイトル' }),
+      '（編集中）',
+    );
+    await user.click(
+      screen.getByRole('button', { name: 'タイトルの編集をキャンセル' }),
+    );
+
+    expect(
+      within(main).getByRole('heading', { name: '坊ちゃん' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('textbox', { name: 'タイトル' }),
+    ).not.toBeInTheDocument();
+  });
+});
